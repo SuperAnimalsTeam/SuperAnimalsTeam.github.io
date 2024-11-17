@@ -1,22 +1,56 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="icon" href="./icon.ico" type="image/x-icon">
-        <link rel="shorcu icon" href="./icon.ico" type="image/x-icon">
-        <title>Super Animals--中学理科/语言学研究小组</title>
-    </head>
-    <body bgcolor="lightgreen">
-        <img src="./icon.jpg"><br>
-            <p></p> 
-            <font size="20">Super Animals<br></font><font size="5">——中学理科/语言学研究小组<br></font>
-            <a href='./joinus.html'>JOIN US</a>
-            <font size="6"><br>题库 交流社区</font>
-            <a href="./questions.html"><br>题库</a><a href="./community.html"><br>交流社区</a>
-            <font size="6"><br>全部比赛<br></font>
-            阳痿杯 链接:<a href='./yangweibei.html'>阳痿杯</a>
+<html lang="cn">
+<script>
+    var pwd;
+    function login(){
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        if(username == ""){
+            alert("Please enter username");
+        }
+        if(password == ""){
+            alert("Please enter password");
+        }
 
+    }
+    function register(){
+        var username = document.getElementById('username').value;
+        pwd = document.getElementById('password').value;
+        if(username == ""){
+            alert("Please enter username");
+        }
+        else if (password != "") {
+            pwd=document.getElementById('password').value;
+            document.getElementById('password').value="";
+            var op1 = document.getElementById('p1');
+            op1.innerHTML = "INPUT AGAIN:&ensp; ";
+            op1=document.getElementById('p2');
+            op1.innerHTML = "<button onclick=\"reg2()\">确认</button>";
+        } else {
+            alert("Please enter password");
+        }
+    }
+    function reg2(){
 
-            <a href='./.idea/i.html'>chat</a>
-    
-    </body>
+    }
+</script>
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="./8.ico" type="image/x-icon">
+    <link rel="shorcu icon" href="./8.ico" type="image/x-icon">
+    <title>SuperAnimalsChat</title>
+</head>
+<body>
+    User Name: <input type="text" name="username" id="username"><br>
+    <div id="p1" class="div1">Password:&ensp;</div><input type="password" name="password" id="password"><br>
+
+<button onclick="login()">Login</button>
+<button onclick="register()">Register</button>
+<div id="p2" class="div1"></div>
+    <style>
+        .div1{
+            display:inline-block;
+        }
+    </style>
+</body>
 </html>
