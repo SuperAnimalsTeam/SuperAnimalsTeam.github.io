@@ -6,10 +6,10 @@
         var username = document.getElementById('username').value;
         var password = document.getElementById('password').value;
         if(username == ""){
-            alert("Please enter username");
+            alert("请输入用户名");
         }
         if(password == ""){
-            alert("Please enter password");
+            alert("请输入密码");
         }
 
     }
@@ -17,21 +17,24 @@
         var username = document.getElementById('username').value;
         pwd = document.getElementById('password').value;
         if(username == ""){
-            alert("Please enter username");
+            alert("请输入用户名");
         }
         else if (password != "") {
             pwd=document.getElementById('password').value;
             document.getElementById('password').value="";
             var op1 = document.getElementById('p1');
-            op1.innerHTML = "INPUT AGAIN:&ensp; ";
+            op1.innerHTML = "再次输入:&ensp; ";
             op1=document.getElementById('p2');
             op1.innerHTML = "<button onclick=\"reg2()\">确认</button>";
         } else {
-            alert("Please enter password");
+            alert("请输入密码");
         }
     }
     function reg2(){
-
+        var pwd2=document.getElementById('password').value;
+        if(pwd2!=pwd){
+          
+        }
     }
 </script>
 <head>
@@ -41,11 +44,11 @@
     <title>SuperAnimalsChat</title>
 </head>
 <body>
-    User Name: <input type="text" name="username" id="username"><br>
-    <div id="p1" class="div1">Password:&ensp;</div><input type="password" name="password" id="password"><br>
+    用户名: <input type="text" name="username" id="username"><br>
+    <div id="p1" class="div1">密码:&ensp;</div><input type="password" name="password" id="password"><br>
 
-<button onclick="login()">Login</button>
-<button onclick="register()">Register</button>
+<button onclick="login()">登录</button>
+<button onclick="register()">注册新用户</button>
 <div id="p2" class="div1"></div>
     <style>
         .div1{
