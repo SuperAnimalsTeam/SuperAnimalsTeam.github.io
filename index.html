@@ -78,9 +78,9 @@ function alt(i,msg) {
         alert(msg);
     }
 }
+var i=0;
 function lgn(userid,password){
   const request = indexedDB.open("sutest", 1);
-    let i = 0;
   request.onsuccess = function(event) {
     db = event.target.result;
     var transactiona = db.transaction("uap", "readwrite");
@@ -96,9 +96,10 @@ function lgn(userid,password){
         i = 1;
       }
     }
+
     }
 
-    alt(1 - i, "用户名不存在！");
+
     db.close();
   request.onerror = function(event) {
     console.error('Database error:', event.target.error);
@@ -106,6 +107,8 @@ function lgn(userid,password){
 }
   function e(){
       lgn(document.getElementById("usrn").value,document.getElementById("pswd").value);
+
+
   }
 </script>
 </html>
