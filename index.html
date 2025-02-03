@@ -1,22 +1,111 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="icon" href="./icon.ico" type="image/x-icon">
-        <link rel="shorcu icon" href="./icon.ico" type="image/x-icon">
-        <title>Super Animals--中学理科/语言学研究小组</title>
-    </head>
-    <body bgcolor="lightgreen">
-        <img src="./icon.jpg"><br>
-            <p></p> 
-            <font size="20">Super Animals<br></font><font size="5">——中学理科/语言学研究小组<br></font>
-            <a href='./joinus.html'>JOIN US</a>
-            <font size="6"><br>题库 交流社区</font>
-            <a href="./questions.html"><br>题库</a><a href="./community.html"><br>交流社区</a>
-            <font size="6"><br>全部比赛<br></font>
-            阳痿杯 链接:<a href='./yangweibei.html'>阳痿杯</a>
+<!--suppress JSDeprecatedSymbols -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SuperAnimalsChat</title>
+</head>
+<body bgcolor="#90EE90" onload="p()">
+<img src="8.ico" alt="SuperAnimalsTeam"></img><br>
+<p id="p1">
+用户名:<input id="usrn" style="width:500px" />
+</p>
+<p id="p2">
+  密码:<input id="pswd" type="password" style="width:500px" />
+</p>
+<button onclick="d()">注册</button>
+<button onclick="e()">登录</button>
+</body>
+<script src="crypto-js.js" ></script>
+<script>
+  function MD5(text){
+    var hash = CryptoJS.MD5(text);
+    var hash1 = CryptoJS.MD5(hash);
+    var hash2 = CryptoJS.MD5(hash1);
+    var hash3 = CryptoJS.MD5(hash2);
+    var hash4 = CryptoJS.MD5(hash3);
+    var hash5 = CryptoJS.MD5(hash4);
+    var hash6 = CryptoJS.MD5(hash5);
+    return hash6;
+  }
+ var db;
+  function p(){
+  const request = indexedDB.open("sutest", 1);
 
+  request.onupgradeneeded = function(event) {
+    db = event.target.result;
+    // 创建对象存储（表）并设置主键
+    if(!db.objectStoreNames.contains("uap")){var objectStoreu = db.createObjectStore("uap", { keyPath: 'id' });}
+    if(!db.objectStoreNames.contains("msg")){var objectStorem = db.createObjectStore("msg", { keyPath: 'id' });}
+// 创建索引
+    //objectStore.createIndex("fieldName", "fieldName", { unique: false });
+  };
+  request.onsuccess = function(event) {
+    db = event.target.result;
+    db.close();
+  }
+  request.onerror = function(event) {
+    console.error('Database error:', event.target.error);
+  };
+  }
+  function adduser(userid,password){
+    const request = indexedDB.open("sutest", 1);
+    request.onsuccess = function(event) {
+      db = event.target.result;
+      var transactiona = db.transaction("uap", "readwrite");
+      var objectStore = transactiona.objectStore("uap");
+      var requesta = objectStore.add({id: userid, password: password});
+      requesta.onerror = function(event) {
+        alert("用户名已存在！");
+      }
+      requesta.onsuccess = function(event) {
+        alert("注册成功！");
+      }
+      db.close();
+    }
+    request.onerror = function(event) {
+      console.error('Database error:', event.target.error);
+    };
+  }
+function d(){
+    adduser(document.getElementById("usrn").value,CryptoJS.MD5(document.getElementById("pswd").value).toString());
+  document.getElementById("usrn").value="";
+  document.getElementById("pswd").value="";
+}
 
-            <a href='./.idea/i.html'>chat</a>
-    
-    </body>
+function alt(i,msg) {
+    if (i == 1) {
+        alert(msg);
+    }
+}
+function lgn(userid,password){
+  const request = indexedDB.open("sutest", 1);
+    let i = 0;
+  request.onsuccess = function(event) {
+    db = event.target.result;
+    var transactiona = db.transaction("uap", "readwrite");
+    var objectStore = transactiona.objectStore("uap");
+    var requesta = objectStore.get(userid);
+    requesta.onsuccess = function (event) {
+      var b = event.target.result.password;
+      if (b != CryptoJS.MD5(password).toString()) {
+        alert("密码错误！");
+        i = 1;
+      } else {
+        alert("登录成功！");
+        i = 1;
+      }
+    }
+    }
+
+    alt(1 - i, "用户名不存在！");
+    db.close();
+  request.onerror = function(event) {
+    console.error('Database error:', event.target.error);
+  };
+}
+  function e(){
+      lgn(document.getElementById("usrn").value,document.getElementById("pswd").value);
+  }
+</script>
 </html>
