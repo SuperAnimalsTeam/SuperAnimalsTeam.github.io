@@ -1,114 +1,195 @@
 <!DOCTYPE html>
-<!--suppress JSDeprecatedSymbols -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SuperAnimalsChat</title>
+    <title>SACHAT(PRE1)</title>
+    <meta http-equiv="refresh" content="20">
 </head>
-<body bgcolor="#90EE90" onload="p()">
-<img src="8.ico" alt="SuperAnimalsTeam"></img><br>
-<p id="p1">
-用户名:<input id="usrn" style="width:500px" />
-</p>
-<p id="p2">
-  密码:<input id="pswd" type="password" style="width:500px" />
-</p>
-<button onclick="d()">注册</button>
-<button onclick="e()">登录</button>
+<body bgcolor="#90EE90" onload="pageload()">
+    <img src="8.ico" alt="SACHAT(PRE1)">
+    <br><textarea id="ta" rows="20" cols="50" style="background-color:#90EE90; font-size:23px" readonly></textarea>
+    <button id="pgup" onclick="pgup()" hidden="hidden">上一页</button>
+    <p id="p1"></p>
+    <p id="p2"></p>
+    <p id="p3"></p>
+    <p id="p4"></p>
+    <p id="p5"></p>
+    <p id="p6"></p>
+    <p id="p7"></p>
+    <p id="p8"></p>
+    <p id="p9"></p>
+    <p id="p0"></p>
+    <button id="pgdn" onclick="pgdn()" hidden="hidden">下一页</button>
+    昵称： <input id="usrn" /><br>消息内容： <input id="msg" /><br><button id="send" onclick="send()" >发送</button>
 </body>
-<script src="crypto-js.js" ></script>
 <script>
-  function MD5(text){
-    var hash = CryptoJS.MD5(text);
-    var hash1 = CryptoJS.MD5(hash);
-    var hash2 = CryptoJS.MD5(hash1);
-    var hash3 = CryptoJS.MD5(hash2);
-    var hash4 = CryptoJS.MD5(hash3);
-    var hash5 = CryptoJS.MD5(hash4);
-    var hash6 = CryptoJS.MD5(hash5);
-    return hash6;
-  }
- var db;
-  function p(){
-  const request = indexedDB.open("sutest", 1);
+    var m= new Array({id:-1,msg:"",usr:""});
+    function pageload() {
+        const reques = indexedDB.open("sutest", 1);
+        reques.onupgradeneeded = function(event) {
+            db = event.target.result;
+            if(!db.objectStoreNames.contains("msg")){var objectStorem = db.createObjectStore("msg", { keyPath: 'id' });}
+        };
+        reques.onsuccess = function(event) {
+            db = event.target.result;
+            var t=db.transaction(["msg"], "readwrite");
+            var objectStore = t.objectStore("msg");
+            var q=objectStore.count();
+            var cnt=0;
+            q.onsuccess = function(event) {
+                cnt=event.target.result;
+                console.log(cnt);
+                var c=0;
+                var s=0;
+                for(var i=1;i<=cnt;i++){
+                    if(s==i){
+                        continue;
+                    }
+                    else{
+                        s++;
+                    }
+                    var t=db.transaction(["msg"], "readwrite");
+                    var objectStore = t.objectStore("msg");
+                    var w=objectStore.get(i);
+                    w.onerror = function(event) {
+                        //alert("error");
+                    }
+                    w.onsuccess = function(event) {
+                        m[event.target.result.id]=event.target.result;
+                        var t=document.getElementById("ta");
+                        t.value+=m[event.target.result.id]["usr"];
+                        t.value+=": ";
+                        t.value+=m[event.target.result.id]["msg"];
+                        t.value+="\n";
+                        t.innerHTML+="<br>";
+                        c++;
+                        console.log(c);
+                        if(c==cnt){
+                            console.log("a");
+                            console.log(m);
+                            /*if(cnt>=10){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                                document.getElementById("p3").innerHTML=m[cnt-2]["usr"]+": "+m[cnt-2]["msg"];
+                                document.getElementById("p4").innerHTML=m[cnt-3]["usr"]+": "+m[cnt-3]["msg"];
+                                document.getElementById("p5").innerHTML=m[cnt-4]["usr"]+": "+m[cnt-4]["msg"];
+                                document.getElementById("p6").innerHTML=m[cnt-5]["usr"]+": "+m[cnt-5]["msg"];
+                                document.getElementById("p7").innerHTML=m[cnt-6]["usr"]+": "+m[cnt-6]["msg"];
+                                document.getElementById("p8").innerHTML=m[cnt-7]["usr"]+": "+m[cnt-7]["msg"];
+                                document.getElementById("p9").innerHTML=m[cnt-8]["usr"]+": "+m[cnt-8]["msg"];
+                                document.getElementById("p0").innerHTML=m[cnt-9]["usr"]+": "+m[cnt-9]["msg"];
+                            }
+                            else if(cnt==9){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                                document.getElementById("p3").innerHTML=m[cnt-2]["usr"]+": "+m[cnt-2]["msg"];
+                                document.getElementById("p4").innerHTML=m[cnt-3]["usr"]+": "+m[cnt-3]["msg"];
+                                document.getElementById("p5").innerHTML=m[cnt-4]["usr"]+": "+m[cnt-4]["msg"];
+                                document.getElementById("p6").innerHTML=m[cnt-5]["usr"]+": "+m[cnt-5]["msg"];
+                                document.getElementById("p7").innerHTML=m[cnt-6]["usr"]+": "+m[cnt-6]["msg"];
+                                document.getElementById("p8").innerHTML=m[cnt-7]["usr"]+": "+m[cnt-7]["msg"];
+                                document.getElementById("p9").innerHTML=m[cnt-8]["usr"]+": "+m[cnt-8]["msg"];
+                            }
+                            else if(cnt==8){
+                                console.log(m);
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                                document.getElementById("p3").innerHTML=m[cnt-2]["usr"]+": "+m[cnt-2]["msg"];
+                                document.getElementById("p4").innerHTML=m[cnt-3]["usr"]+": "+m[cnt-3]["msg"];
+                                document.getElementById("p5").innerHTML=m[cnt-4]["usr"]+": "+m[cnt-4]["msg"];
+                                document.getElementById("p6").innerHTML=m[cnt-5]["usr"]+": "+m[cnt-5]["msg"];
+                                document.getElementById("p7").innerHTML=m[cnt-6]["usr"]+": "+m[cnt-6]["msg"];
+                                document.getElementById("p8").innerHTML=m[cnt-7]["usr"]+": "+m[cnt-7]["msg"];
+                            }
+                            else if(cnt==7){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                                document.getElementById("p3").innerHTML=m[cnt-2]["usr"]+": "+m[cnt-2]["msg"];
+                                document.getElementById("p4").innerHTML=m[cnt-3]["usr"]+": "+m[cnt-3]["msg"];
+                                document.getElementById("p5").innerHTML=m[cnt-4]["usr"]+": "+m[cnt-4]["msg"];
+                                document.getElementById("p6").innerHTML=m[cnt-5]["usr"]+": "+m[cnt-5]["msg"];
+                                document.getElementById("p7").innerHTML=m[cnt-6]["usr"]+": "+m[cnt-6]["msg"];
+                            }
+                            else if(cnt==6){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                                document.getElementById("p3").innerHTML=m[cnt-2]["usr"]+": "+m[cnt-2]["msg"];
+                                document.getElementById("p4").innerHTML=m[cnt-3]["usr"]+": "+m[cnt-3]["msg"];
+                                document.getElementById("p5").innerHTML=m[cnt-4]["usr"]+": "+m[cnt-4]["msg"];
+                                document.getElementById("p6").innerHTML=m[cnt-5]["usr"]+": "+m[cnt-5]["msg"];
+                            }
+                            else if(cnt==5){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                                document.getElementById("p3").innerHTML=m[cnt-2]["usr"]+": "+m[cnt-2]["msg"];
+                                document.getElementById("p4").innerHTML=m[cnt-3]["usr"]+": "+m[cnt-3]["msg"];
+                                document.getElementById("p5").innerHTML=m[cnt-4]["usr"]+": "+m[cnt-4]["msg"];
+                            }
+                            else if(cnt==4){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                                document.getElementById("p3").innerHTML=m[cnt-2]["usr"]+": "+m[cnt-2]["msg"];
+                                document.getElementById("p4").innerHTML=m[cnt-3]["usr"]+": "+m[cnt-3]["msg"];
+                            }
+                            else if(cnt==3){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                                document.getElementById("p3").innerHTML=m[cnt-2]["usr"]+": "+m[cnt-2]["msg"];
+                            }
+                            else if(cnt==2){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                                document.getElementById("p2").innerHTML=m[cnt-1]["usr"]+": "+m[cnt-1]["msg"];
+                            }
+                            else if(cnt==1){
+                                document.getElementById("p1").innerHTML=m[cnt]["usr"]+": "+m[cnt]["msg"];
+                            }*/
 
-  request.onupgradeneeded = function(event) {
-    db = event.target.result;
-    // 创建对象存储（表）并设置主键
-    if(!db.objectStoreNames.contains("uap")){var objectStoreu = db.createObjectStore("uap", { keyPath: 'id' });}
-    if(!db.objectStoreNames.contains("msg")){var objectStorem = db.createObjectStore("msg", { keyPath: 'id' });}
-// 创建索引
-    //objectStore.createIndex("fieldName", "fieldName", { unique: false });
-  };
-  request.onsuccess = function(event) {
-    db = event.target.result;
-    db.close();
-  }
-  request.onerror = function(event) {
-    console.error('Database error:', event.target.error);
-  };
-  }
-  function adduser(userid,password){
-    const request = indexedDB.open("sutest", 1);
-    request.onsuccess = function(event) {
-      db = event.target.result;
-      var transactiona = db.transaction("uap", "readwrite");
-      var objectStore = transactiona.objectStore("uap");
-      var requesta = objectStore.add({id: userid, password: password});
-      requesta.onerror = function(event) {
-        alert("用户名已存在！");
-      }
-      requesta.onsuccess = function(event) {
-        alert("注册成功！");
-      }
-      db.close();
+                        }
+                    }
+                    if(i==cnt){
+                        db.close();
+                    }
+                }
+            }
+        }
+        reques.onerror = function(event) {
+            console.error('Database error:', event.target.error);
+        };
     }
-    request.onerror = function(event) {
-      console.error('Database error:', event.target.error);
-    };
-  }
-function d(){
-    adduser(document.getElementById("usrn").value,CryptoJS.MD5(document.getElementById("pswd").value).toString());
-  document.getElementById("usrn").value="";
-  document.getElementById("pswd").value="";
-}
-
-function alt(i,msg) {
-    if (i == 1) {
-        alert(msg);
+    function send(){
+        const reques = indexedDB.open("sutest", 1);
+        reques.onsuccess = function(event) {
+            db = event.target.result;
+            var t = db.transaction(["msg"], "readwrite");
+            var objectStore = t.objectStore("msg");
+            var q = objectStore.count();
+            var cnt = 0;
+            q.onsuccess = function (event) {
+                cnt = event.target.result;
+                objectStore.add({
+                    id: cnt + 1,
+                    msg: document.getElementById("msg").value,
+                    usr: document.getElementById("usrn").value
+                });
+                document.getElementById("p2").innerHTML = document.getElementById("p3").innerHTML;
+                document.getElementById("p3").innerHTML = document.getElementById("p4").innerHTML;
+                document.getElementById("p4").innerHTML = document.getElementById("p5").innerHTML;
+                document.getElementById("p5").innerHTML = document.getElementById("p6").innerHTML;
+                document.getElementById("p6").innerHTML = document.getElementById("p7").innerHTML;
+                document.getElementById("p7").innerHTML = document.getElementById("p8").innerHTML;
+                document.getElementById("p8").innerHTML = document.getElementById("p9").innerHTML;
+                document.getElementById("p9").innerHTML = document.getElementById("p0").innerHTML;
+                document.getElementById("p1").innerHTML = document.getElementById("p2").innerHTML;
+                document.getElementById("ta").value += document.getElementById("usrn").value+": "+document.getElementById("msg").value+"\n";
+            }
+            db.close();
+        }
     }
-}
-var i=0;
-function lgn(userid,password){
-  const request = indexedDB.open("sutest", 1);
-  request.onsuccess = function(event) {
-    db = event.target.result;
-    var transactiona = db.transaction("uap", "readwrite");
-    var objectStore = transactiona.objectStore("uap");
-    var requesta = objectStore.get(userid);
-    requesta.onsuccess = function (event) {
-      var b = event.target.result.password;
-      if (b != CryptoJS.MD5(password).toString()) {
-        alert("密码错误！");
-        i = 1;
-      } else {
-        alert("登录成功！");
-        i = 1;
-      }
-    }
+    function pgup() {
 
     }
+    function pgdn() {
 
-
-    db.close();
-  request.onerror = function(event) {
-    console.error('Database error:', event.target.error);
-  };
-}
-  function e(){
-      lgn(document.getElementById("usrn").value,document.getElementById("pswd").value);
-
-
-  }
+    }
 </script>
 </html>
