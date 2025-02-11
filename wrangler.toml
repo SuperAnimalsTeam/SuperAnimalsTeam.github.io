@@ -1,0 +1,8 @@
+name = "sanimalschat"
+main = "functions/api/[[path]].js"
+compatibility_date = "2023-10-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "chat-db"
+database_id = "b0acb322-6344-4c30-9df5-2d19eb5d6f0a"
