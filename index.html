@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Editor</title>
+    <style>
+        #svg-container {
+            width: 1000px;
+            height: 600px;
+            border: 1px solid #000;
+        }
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="svg-container">
+        <svg id="svg" width="1000" height="600"></svg>
+    </div>
+    <div>
+        <button onclick="drawLine1()">按钮1</button>
+        <button onclick="drawLine2()">按钮2</button>
+        <button onclick="drawLine3()">按钮3</button>
+        <button onclick="drawLine4()">按钮4</button>
+        <button onclick="drawLine5()">按钮5</button>
+        <button onclick="drawLine6()">按钮6</button>
+        <button onclick="drawLine7()">按钮7</button>
+        <button onclick="drawLine8()">按钮8</button>
+        <button onclick="drawTone1()">一声</button>
+        <button onclick="drawTone2()">二声</button>
+        <button onclick="drawTone3()">三声</button>
+        <button onclick="drawTone4()">四声</button>
+        <button onclick="undo()">撤销</button>
+        <button onclick="downloadSVG()">下载为SVG</button>
+    </div>
+
+    <script>
+        let x = 0;
+        let y = 1;
+        let svg = document.getElementById('svg');
+        let history = [];
+
+        // 保存当前状态
+        function saveState() {
+            let elements = Array.from(svg.children);
+            history.push({ elements, x, y });
+        }
+
+        // 撤销操作
+        function undo() {
+            if (history.length > 0) {
+                let previousState = history.pop();
+                svg.innerHTML = '';
+                previousState.elements.forEach(element => svg.appendChild(element));
+                x = previousState.x;
+                y = previousState.y;
+            }
+        }
+
+        // 更新 x 和 y
+        function updatePosition() {
+            x += 1;
+            if (x === 25) {
+                x = 0;
+                y += 1;
+            }
+        }
+
+        // 绘制直线
+        function drawLine(x1, y1, x2, y2) {
+            let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('stroke', 'black');
+            svg.appendChild(line);
+            return line;
+        }
+
+        // 绘制圆
+        function drawCircle(cx, cy, r) {
+            let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', cx);
+            circle.setAttribute('cy', cy);
+            circle.setAttribute('r', r);
+            circle.setAttribute('fill', 'none');
+            circle.setAttribute('stroke', 'black');
+            svg.appendChild(circle);
+            return circle;
+        }
+
+        // 按钮1
+        function drawLine1() {
+            saveState();
+            drawLine(x * 40, y * 30, x * 40 + 40, y * 30);
+            updatePosition();
+        }
+
+        // 按钮2
+        function drawLine2() {
+            saveState();
+            drawLine(x * 40, y * 30, x * 40 + 40, y * 30);
+            drawCircle(x * 40 + 20, y * 30 - 10, 10);
+            updatePosition();
+        }
+
+        // 按钮3
+        function drawLine3() {
+            saveState();
+            drawLine(x * 40, y * 30, x * 40 + 40, y * 30);
+            drawCircle(x * 40 + 20, y * 30 + 10, 10);
+            updatePosition();
+        }
+
+        // 按钮4
+        function drawLine4() {
+            saveState();
+            drawLine(x * 40, y * 30, x * 40 + 10, y * 30);
+            drawLine(x * 40 + 10, y * 30, x * 40 + 20, y * 30 - 20);
+            drawLine(x * 40 + 20, y * 30 - 20, x * 40 + 30, y * 30);
+            drawLine(x * 40 + 30, y * 30, x * 40 + 40, y * 30);
+            updatePosition();
+        }
+
+        // 按钮5
+        function drawLine5() {
+            saveState();
+            drawLine(x * 40, y * 30, x * 40 + 10, y * 30);
+            drawLine(x * 40 + 10, y * 30, x * 40 + 20, y * 30 + 20);
+            drawLine(x * 40 + 20, y * 30 + 20, x * 40 + 30, y * 30);
+            drawLine(x * 40 + 30, y * 30, x * 40 + 40, y * 30);
+            updatePosition();
+        }
+
+        // 按钮6
+        function drawLine6() {
+            saveState();
+            drawLine(x * 40, y * 30, x * 40 + 10, y * 30);
+            drawLine(x * 40 + 10, y * 30, x * 40 + 20, y * 30 - 10);
+            drawLine(x * 40 + 20, y * 30 - 10, x * 40 + 30, y * 30);
+            drawLine(x * 40 + 30, y * 30, x * 40 + 40, y * 30);
+            drawCircle(x * 40 + 20, y * 30 - 20, 10);
+            updatePosition();
+        }
+
+        // 按钮7
+        function drawLine7() {
+            saveState();
+            drawLine(x * 40, y * 30, x * 40 + 10, y * 30);
+            drawLine(x * 40 + 10, y * 30, x * 40 + 20, y * 30 + 10);
+            drawLine(x * 40 + 20, y * 30 + 10, x * 40 + 30, y * 30);
+            drawLine(x * 40 + 30, y * 30, x * 40 + 40, y * 30);
+            drawCircle(x * 40 + 20, y * 30 + 20, 10);
+            updatePosition();
+        }
+
+        // 按钮8
+        function drawLine8() {
+            saveState();
+            drawLine(x * 40, y * 30, x * 40 + 40, y * 30); // 绘制直线
+            drawCircle(x * 40 + 20, y * 30 - 10, 10); // 绘制上方圆
+            drawCircle(x * 40 + 20, y * 30 + 10, 10); // 绘制下方圆
+            updatePosition();
+        }
+
+        // 一声
+        function drawTone1() {
+            saveState();
+            drawCircle(x * 40 - 20, y * 30 + 28, 2); // 绘制圆
+        }
+
+        // 二声
+        function drawTone2() {
+            saveState();
+            drawCircle(x * 40 - 20, y * 30 - 28, 2); // 绘制圆
+        }
+
+        // 三声
+        function drawTone3() {
+            saveState();
+            drawCircle(x * 40 - 25, y * 30 + 28, 2); // 绘制第一个圆
+            drawCircle(x * 40 - 15, y * 30 + 28, 2); // 绘制第二个圆
+        }
+
+        // 四声
+        function drawTone4() {
+            saveState();
+            drawCircle(x * 40 - 25, y * 30 - 28, 2); // 绘制第一个圆
+            drawCircle(x * 40 - 15, y * 30 - 28, 2); // 绘制第二个圆
+        }
+
+        // 下载为 SVG
+        function downloadSVG() {
+            const svgElement = document.getElementById('svg');
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svgElement);
+
+            // 创建 Blob 对象
+            const blob = new Blob([svgString], { type: 'image/svg+xml' });
+
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'drawing.svg';
+            link.click();
+
+            // 释放 URL 对象
+            URL.revokeObjectURL(link.href);
+        }
+    </script>
+</body>
+</html>
