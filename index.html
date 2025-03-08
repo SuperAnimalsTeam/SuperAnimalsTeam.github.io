@@ -6,9 +6,15 @@
     <title>SVG Editor</title>
     <style>
         #svg-container {
-            width: 1000px;
+            width: 1100px;
             height: 600px;
             border: 1px solid #000;
+        }
+        #jpg-preview {
+            width: 1100px;
+            height: 600px;
+            border: 1px solid #000;
+            margin-top: 20px;
         }
         button {
             margin: 5px;
@@ -33,7 +39,12 @@
         <button onclick="drawTone3()">三声</button>
         <button onclick="drawTone4()">四声</button>
         <button onclick="undo()">撤销</button>
-        <button onclick="downloadSVG()">下载为SVG</button>
+        <button onclick="clearCanvas()">清空</button>
+        <button onclick="downloadJPG()">下载为JPG</button>
+    </div>
+    <div>
+        <h3>JPG 预览</h3>
+        <canvas id="jpg-preview"></canvas>
     </div>
 
     <script>
@@ -57,6 +68,16 @@
                 x = previousState.x;
                 y = previousState.y;
             }
+            updateJPGPreview(); // 更新 JPG 预览
+        }
+
+        // 清空画布
+        function clearCanvas() {
+            svg.innerHTML = ''; // 清空 SVG
+            x = 0; // 重置 x
+            y = 1; // 重置 y
+            history = []; // 清空历史记录
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 更新 x 和 y
@@ -97,6 +118,7 @@
             saveState();
             drawLine(x * 40, y * 30, x * 40 + 40, y * 30);
             updatePosition();
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 按钮2
@@ -105,6 +127,7 @@
             drawLine(x * 40, y * 30, x * 40 + 40, y * 30);
             drawCircle(x * 40 + 20, y * 30 - 10, 10);
             updatePosition();
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 按钮3
@@ -113,6 +136,7 @@
             drawLine(x * 40, y * 30, x * 40 + 40, y * 30);
             drawCircle(x * 40 + 20, y * 30 + 10, 10);
             updatePosition();
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 按钮4
@@ -123,6 +147,7 @@
             drawLine(x * 40 + 20, y * 30 - 20, x * 40 + 30, y * 30);
             drawLine(x * 40 + 30, y * 30, x * 40 + 40, y * 30);
             updatePosition();
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 按钮5
@@ -133,6 +158,7 @@
             drawLine(x * 40 + 20, y * 30 + 20, x * 40 + 30, y * 30);
             drawLine(x * 40 + 30, y * 30, x * 40 + 40, y * 30);
             updatePosition();
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 按钮6
@@ -144,6 +170,7 @@
             drawLine(x * 40 + 30, y * 30, x * 40 + 40, y * 30);
             drawCircle(x * 40 + 20, y * 30 - 20, 10);
             updatePosition();
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 按钮7
@@ -155,6 +182,7 @@
             drawLine(x * 40 + 30, y * 30, x * 40 + 40, y * 30);
             drawCircle(x * 40 + 20, y * 30 + 20, 10);
             updatePosition();
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 按钮8
@@ -164,18 +192,21 @@
             drawCircle(x * 40 + 20, y * 30 - 10, 10); // 绘制上方圆
             drawCircle(x * 40 + 20, y * 30 + 10, 10); // 绘制下方圆
             updatePosition();
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 一声
         function drawTone1() {
             saveState();
             drawCircle(x * 40 - 20, y * 30 + 28, 2); // 绘制圆
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 二声
         function drawTone2() {
             saveState();
             drawCircle(x * 40 - 20, y * 30 - 28, 2); // 绘制圆
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 三声
@@ -183,6 +214,7 @@
             saveState();
             drawCircle(x * 40 - 25, y * 30 + 28, 2); // 绘制第一个圆
             drawCircle(x * 40 - 15, y * 30 + 28, 2); // 绘制第二个圆
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
         // 四声
@@ -190,25 +222,38 @@
             saveState();
             drawCircle(x * 40 - 25, y * 30 - 28, 2); // 绘制第一个圆
             drawCircle(x * 40 - 15, y * 30 - 28, 2); // 绘制第二个圆
+            updateJPGPreview(); // 更新 JPG 预览
         }
 
-        // 下载为 SVG
-        function downloadSVG() {
+        // 更新 JPG 预览
+        function updateJPGPreview() {
             const svgElement = document.getElementById('svg');
-            const serializer = new XMLSerializer();
-            const svgString = serializer.serializeToString(svgElement);
+            const canvas = document.getElementById('jpg-preview');
+            const ctx = canvas.getContext('2d');
 
-            // 创建 Blob 对象
-            const blob = new Blob([svgString], { type: 'image/svg+xml' });
+            // 设置 canvas 尺寸与 SVG 一致
+            canvas.width = svgElement.getAttribute('width');
+            canvas.height = svgElement.getAttribute('height');
 
-            // 创建下载链接
+            // 将 SVG 转换为图片
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const img = new Image();
+            img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+
+            img.onload = () => {
+                // 将图片绘制到 canvas 上
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // 清空画布
+                ctx.drawImage(img, 0, 0);
+            };
+        }
+
+        // 下载为 JPG
+        function downloadJPG() {
+            const canvas = document.getElementById('jpg-preview');
             const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'drawing.svg';
+            link.href = canvas.toDataURL('image/jpeg');
+            link.download = 'drawing.jpg';
             link.click();
-
-            // 释放 URL 对象
-            URL.revokeObjectURL(link.href);
         }
     </script>
 </body>
